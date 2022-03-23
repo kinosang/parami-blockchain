@@ -174,7 +174,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
     spec_name: create_runtime_str!("parami"),
     impl_name: create_runtime_str!("parami-node"),
     authoring_version: 20,
-    spec_version: 321,
+    spec_version: 322,
     impl_version: 0,
     apis: RUNTIME_API_VERSIONS,
     transaction_version: 2,
@@ -1097,6 +1097,7 @@ parameter_types! {
 
 impl parami_ad::Config for Runtime {
     type Event = Event;
+    type Accounts = Magic;
     type Assets = Assets;
     type MinimumFeeBalance = AdvertiserMinimumFee;
     type PalletId = AdPalletId;
@@ -1197,7 +1198,6 @@ parameter_types! {
 
 impl parami_magic::Config for Runtime {
     type Event = Event;
-    type Currency = Balances;
     type AutomaticDeposit = AutomaticDeposit;
     type Call = Call;
     type PalletId = MagicPalletId;
