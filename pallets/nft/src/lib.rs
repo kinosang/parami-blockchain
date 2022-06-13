@@ -26,7 +26,7 @@ use frame_support::{
         tokens::{
             fungibles::{
                 metadata::Mutate as FungMetaMutate, Create as FungCreate, Mutate as FungMutate,
-                Transfer as FungTransfer,
+                Transfer as FungTransfer, MutateHold as FungHold
             },
             nonfungibles::{Create as NftCreate, Mutate as NftMutate},
         },
@@ -93,23 +93,24 @@ pub mod pallet {
             + Bounded
             + Copy;
 
-        /// The assets trait to create, mint, and transfer fragments (fungible token)
-        type Assets: FungCreate<AccountOf<Self>, AssetId = AssetOf<Self>>
-            + FungMetaMutate<AccountOf<Self>, AssetId = AssetOf<Self>>
+        /// The assets trait to create, mint, and transfer fractions (fungible token)
+        type Assets: FungCreate<AccountOf<Self>, AssetId = AssetOf<Self>, Balance = BalanceOf<Self>>
+            + FungMetaMutate<AccountOf<Self>, AssetId = AssetOf<Self>, Balance = BalanceOf<Self>>
             + FungMutate<AccountOf<Self>, AssetId = AssetOf<Self>, Balance = BalanceOf<Self>>
-            + FungTransfer<AccountOf<Self>, AssetId = AssetOf<Self>, Balance = BalanceOf<Self>>;
+            + FungTransfer<AccountOf<Self>, AssetId = AssetOf<Self>, Balance = BalanceOf<Self>>
+            + FungHold<AccountOf<Self>, AssetId = AssetOf<Self>, Balance = BalanceOf<Self>>;
 
         /// The ICO baseline of donation for currency
         #[pallet::constant]
         type InitialMintingDeposit: Get<BalanceOf<Self>>;
 
-        /// The ICO lockup period for fragments, KOL will not be able to claim before this period
+        /// The ICO lockup period for fractions, KOL will not be able to claim before this period
         #[pallet::constant]
         type InitialMintingLockupPeriod: Get<HeightOf<Self>>;
 
-        /// The ICO value base of fragments, system will mint triple of the value
+        /// The ICO value base of fractions, system will mint triple of the value
         /// once for KOL, once to swaps, once to supporters
-        /// The maximum value of fragments is decuple of this value
+        /// The maximum value of fractions is decuple of this value
         #[pallet::constant]
         type InitialMintingValueBase: Get<BalanceOf<Self>>;
 
@@ -224,11 +225,11 @@ pub mod pallet {
     pub enum Event<T: Config> {
         /// NFT Created \[did, instance\]
         Created(T::DecentralizedId, NftOf<T>),
-        /// NFT fragments Minted \[did, instance, value\]
+        /// NFT fractions Minted \[did, instance, value\]
         Backed(T::DecentralizedId, NftOf<T>, BalanceOf<T>),
-        /// NFT fragments Claimed \[did, instance, value\]
+        /// NFT fractions Claimed \[did, instance, value\]
         Claimed(T::DecentralizedId, NftOf<T>, BalanceOf<T>),
-        /// NFT fragments Minted \[kol, instance, token, name, symbol, tokens\]
+        /// NFT fractions Minted \[kol, instance, token, name, symbol, tokens\]
         Minted(
             T::DecentralizedId,
             NftOf<T>,
@@ -450,7 +451,7 @@ pub mod pallet {
             Ok(())
         }
 
-        /// Claim the fragments.
+        /// Claim the fractions.
         #[pallet::weight(<T as Config>::WeightInfo::claim())]
         pub fn claim(origin: OriginFor<T>, nft: NftOf<T>) -> DispatchResult {
             let (did, who) = EnsureDid::<T>::ensure_origin(origin)?;

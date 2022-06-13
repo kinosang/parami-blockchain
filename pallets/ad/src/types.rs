@@ -11,10 +11,7 @@ pub struct Metadata<A, B, D, H, N> {
     pub id: H,
     pub creator: D,
     pub pot: A,
-    #[codec(compact)]
-    pub budget: B,
-    #[codec(compact)]
-    pub remain: B,
+    // TODO: migration
     pub metadata: Vec<u8>,
     pub reward_rate: u16,
     pub created: N,
@@ -25,19 +22,10 @@ pub struct Metadata<A, B, D, H, N> {
 
 #[derive(Clone, Decode, Default, Encode, Eq, PartialEq, RuntimeDebug, TypeInfo)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
-pub struct Slot<Balance, Hash, Height, NftId, TokenId> {
+pub struct Slot<Hash, Height, NftId, TokenId> {
     pub ad_id: Hash,
     pub nft_id: NftId,
     pub fungible_id: Option<TokenId>,
-    #[codec(compact)]
-    pub budget: Balance,
-    #[codec(compact)]
-    pub remain: Balance,
-    #[codec(compact)]
-    pub fractions_remain: Balance,
-    #[codec(compact)]
-    pub fungibles_budget: Balance,
-    #[codec(compact)]
-    pub fungibles_remain: Balance,
+    // TODO: migration
     pub created: Height,
 }
